@@ -1,4 +1,4 @@
-# Console Push Box Puzzle
+# Console Push Box Puzzle (incomplete) 
 The purpose of [Push box Puzzle](https://en.wikipedia.org/wiki/Sokoban) (a.k.a. Sokoban, warehouse keeper) is storing all of box to hole.
 
 # How to Use
@@ -21,7 +21,11 @@ $ main.py [gameboard].txt
 - `R`: Restart
 
 # How to Make Gameboard
-Gameboard consists of floor(`.`), wall(`\#`), box(`B`), hole(`O`), and unique player(`@`)
+Gameboard consists of floor(`.`), wall(`#`), box(`B`), hole(`O`), and unique player(`@`). You should follow these:
 
-- Set no more than 30 rows and 40 columns (recommended)
-- 
+- Gameboard must be rectangular
+- Set board size to 40 columns (not mandatory, but recommended)
+- Too long map makes it hard to see
+- The number of boxes must be same with that of holes
+- There must be only one player
+
