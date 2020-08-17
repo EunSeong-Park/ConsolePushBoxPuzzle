@@ -1,5 +1,5 @@
 # Console Push Box Puzzle
-The purpose of __Push box Puzzle__ (a.k.a. [Sokoban](https://en.wikipedia.org/wiki/Sokoban), warehouse keeper) is storing all of box to hole.
+The purpose of [Push box Puzzle](https://en.wikipedia.org/wiki/Sokoban) (a.k.a. Sokoban, warehouse keeper) is storing all of box to hole.
 
 # How to Use
 It requires Python 3 and keyboard library:
