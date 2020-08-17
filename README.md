@@ -10,7 +10,7 @@ $ pip3 install keyboard
 
 And then run `main.py` with gameboard file. If argument is omitted, use map.txt as default gameboard
 ```
-$ main.py [gameboard]
+$ main.py [gameboard].txt
 ```
 
 - `W`: Up
