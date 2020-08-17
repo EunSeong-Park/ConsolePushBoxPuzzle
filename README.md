@@ -20,3 +20,8 @@ $ main.py [gameboard].txt
 - `Q`: Quit
 - `R`: Restart
 
+# How to Make Gameboard
+Gameboard consists of floor(`.`), wall(`\#`), box(`B`), hole(`O`), and unique player(`@`)
+
+- Set no more than 30 rows and 40 columns (recommended)
+- 
