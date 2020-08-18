@@ -1,14 +1,21 @@
 import sys
 import os
+import platform
 import re
 import keyboard
-
 
 
 def init():
     global board
     global RC
     global holes
+    global clear_command
+
+    platform_name = platform.system()
+    if platform_name == "Windows":
+        clear_command = 'cls'
+    elif platform_name == "Linux" or platform_name == "Darwin":
+        clear_command = 'clear'
 
     if len(sys.argv) >= 2:
         with open(os.path.dirname(os.path.realpath(__file__)) + "/" + sys.argv[1]) as f:
@@ -75,7 +82,7 @@ def key_handler(key_input):
         return
 
     if temp[0] < 0 or temp[1] < 0 or \
-            temp[0] >= len(board) or temp[1] >= len(board[RC[0]]): # invalid move
+            temp[0] >= len(board) or temp[1] >= len(board[temp[0]]): # invalid move
         return 0
     if board[temp[0]][temp[1]] in " #": # invalid move
         return 0
@@ -102,15 +109,12 @@ def key_handler(key_input):
             box_temp = [temp[0] + 0, temp[1] + 1]
 
         if box_temp[0] < 0 or box_temp[1] < 0 or \
-                box_temp[0] >= len(board) or box_temp[1] >= len(board[RC[0]]): # invalid move
+                box_temp[0] >= len(board) or box_temp[1] >= len(board[box_temp[0]]): # invalid move
+            return 0
+        if board[box_temp[0]][box_temp[1]] in "# ":  # invalid move
             return 0
 
-        box_temp_map = board[box_temp[0]][box_temp[1]]
-
-        if box_temp_map in "# ":  # invalid move
-            return 0
-
-        if box_temp_map == "." or box_temp_map == "O":  # just move
+        if board[box_temp[0]][box_temp[1]] == "." or board[box_temp[0]][box_temp[1]] == "O":  # just move
             if temp in holes:
                 board_replace("O", temp)
             else:
@@ -148,7 +152,6 @@ board = []
 RC = [-1, -1]
 holes = []
 clear_command = "cls"
-
 
 init()
 
