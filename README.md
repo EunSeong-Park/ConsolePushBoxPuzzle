@@ -17,15 +17,13 @@ $ main.py [gameboard].txt
 - `A`: Left
 - `S`: Down
 - `D`: Right
-- `Q`: Quit
+- `Esc`: Quit
 - `R`: Restart
 
 # How to Make Gameboard
-Gameboard consists of floor(`.`), wall(`#`), box(`B`), hole(`O`), and unique player(`@`). You should follow these:
+Gameboard consists of floor(`.`), wall(`#` or ` `(space)), box(`B`), hole(`O`), and unique player(`@`). You should follow these:
 
-- Gameboard must be rectangular
-- Set board size to 40 columns (not mandatory, but recommended)
-- Too long map makes it hard to see
+- Too large map makes it hard to see
 - The number of boxes must be same with that of holes
 - There must be only one player
 
