@@ -1,21 +1,28 @@
 import sys
 import os
+import re
 import keyboard
 
 
 
 def init():
-    '''
-    Load board
-    Check the validity of game board:
-        - uniqueness of player(@)
-        - matching number of boxes(B) and holes(O)
-    Find player and record its coordinate
-    '''
     global board
     global RC
+    global holes
 
-    board_load()
+    if len(sys.argv) >= 2:
+        with open(os.path.dirname(os.path.realpath(__file__)) + "/" + sys.argv[1]) as f:
+            board = f.read().split("\n")
+    else:
+        with open(os.path.dirname(os.path.realpath(__file__)) + "/map.txt") as f:
+            board = f.read().split("\n")
+    for i in range(len(board)):
+        for k in re.finditer("O", board[i]):
+            holes.append([i, k.start()])
+
+    if len(board) == 0:
+        sys.stderr.write("ERROR: Invalid game board(empty board), abort.\n")
+        exit(1)
 
 
     isUnique = False
@@ -35,111 +42,122 @@ def init():
 
     if Bcount != Ocount:
         sys.stderr.write("ERROR: Invalid game board(unmatched box and hole), abort.\n")
-        exit(2)
+        exit(1)
     elif Bcount == 0:
         sys.stderr.write("ERROR: Invalid game board(no box or hole), abort.\n")
-        exit(3)
+        exit(1)
 
 
 def board_replace(char, coor):
     global board
     board[coor[0]] = "".join((board[coor[0]][:coor[1]], char, board[coor[0]][coor[1]+1:]))
-    return
-
-
-def coordinate(coor, R, C):
-    return [coor[0] + R, coor[1] + C]
 
 
 def key_handler(key_input):
     global board
-    global command_history
     global RC
 
     key = key_input.lower()
     temp = RC
 
     if key == "w":
-        temp = coordinate(temp, -1, 0)
+        temp = [temp[0] + -1, temp[1] + 0]
     elif key == "s":
-        temp = coordinate(temp, 1, 0)
+        temp = [temp[0] + 1, temp[1] + 0]
     elif key == "a":
-        temp = coordinate(temp, 0, -1)
+        temp = [temp[0] + 0, temp[1] + -1]
     elif key == "d":
-        temp = coordinate(temp, 0, 1)
-    elif key == "q":
+        temp = [temp[0] + 0, temp[1] + 1]
+    elif key == "esc":
         exit(0)
+    elif key == "r":
+        init()
+        return
 
-    if temp[0] < 0 or temp[1] < 0: # invalid move
+    if temp[0] < 0 or temp[1] < 0 or \
+            temp[0] >= len(board) or temp[1] >= len(board[RC[0]]): # invalid move
+        return 0
+    if board[temp[0]][temp[1]] in " #": # invalid move
         return 0
 
     temp_map = board[temp[0]][temp[1]]
 
     if temp_map == "." or temp_map == "O": # just move
-        board_replace(".", RC)
+        if RC in holes:
+            board_replace("O", RC)
+        else:
+            board_replace(".", RC)
         board_replace("@", temp)
         RC = temp
 
     elif temp_map == "B": # box
         box_temp = [-1, -1]
         if key == "w":
-            box_temp = coordinate(temp, -1, 0)
+            box_temp = [temp[0] + -1, temp[1] + 0]
         elif key == "s":
-            box_temp = coordinate(temp, 1, 0)
+            box_temp = [temp[0] + 1, temp[1] + 0]
         elif key == "a":
-            box_temp = coordinate(temp, 0, -1)
+            box_temp = [temp[0] + 0, temp[1] + -1]
         elif key == "d":
-            box_temp = coordinate(temp, 0, 1)
+            box_temp = [temp[0] + 0, temp[1] + 1]
 
-        if box_temp[0] < 0 or box_temp[1] < 0:  # invalid move
+        if box_temp[0] < 0 or box_temp[1] < 0 or \
+                box_temp[0] >= len(board) or box_temp[1] >= len(board[RC[0]]): # invalid move
             return 0
-        if board[box_temp[0]][box_temp[1]] == "#":  # invalid move
+
+        box_temp_map = board[box_temp[0]][box_temp[1]]
+
+        if box_temp_map in "# ":  # invalid move
             return 0
 
+        if box_temp_map == "." or box_temp_map == "O":  # just move
+            if temp in holes:
+                board_replace("O", temp)
+            else:
+                board_replace(".", temp)
+            board_replace("B", box_temp)
+
+            if RC in holes:
+                board_replace("O", RC)
+            else:
+                board_replace(".", RC)
+            board_replace("@", temp)
+            RC = temp
+
+            if box_temp in holes:
+                if win_check():
+                    os.system(clear_command)
+                    sys.stdout.write("\n " + "-" * 38 + " \n"
+                                                        "| YOU WIN!! Press ESC to quit.         |\n"
+                                                        " " + "-" * 38 + " \n"
+                                     + "\n".join(board))
+                    keyboard.wait("esc")
+                    exit()
 
 
+def win_check():
+    for i in range(len(board)):
+        for k in re.finditer("B", board[i]):
+            if [i, k.start()] not in holes:
+                return 0
+    return 1
 
 
-
-
-def display_nav():
-    sys.stdout.write("\n%-Manual" + "-" * 31 + "%\n"
-                     "| WASD: Move | Q: Quit | R: Restart    |\n"
-                     "| Put all of box(B) into holes(O).     |\n"
-                     "| Have a good game :-)                 |\n"
-                     "%" + "-" * 38 + "%\n")
-
-
-def display_board():
-    global board
-    sys.stdout.write("\n".join(board))
-
-def board_load():
-    global board
-    if len(sys.argv) >= 2:
-        with open(os.path.dirname(os.path.realpath(__file__)) + "/" + sys.argv[1]) as f:
-            board = f.read().split("\n")
-    else:
-        with open(os.path.dirname(os.path.realpath(__file__)) + "/map.txt") as f:
-            board = f.read().split("\n")
-
-# << MAIN >>
-
-
+# MAIN
 board = []
-
-
-boxes = []
+RC = [-1, -1]
 holes = []
-clear_command = ""
+clear_command = "cls"
 
 
 init()
 
 while 1:
-    display_nav()
-    display_board()
+    sys.stdout.write("\n " + "-" * 38 + " \n"
+                                        "| WASD: Move | ESC: Quit | R: Restart  |\n"
+                                        " " + "-" * 38 + " \n"
+                     + "\n".join(board))
     key_handler(keyboard.read_hotkey())
     keyboard.stash_state()
 
-    os.system('cls')
+    os.system(clear_command)
