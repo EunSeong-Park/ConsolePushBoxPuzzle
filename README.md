@@ -1,5 +1,5 @@
-# Console Push Box Puzzle
-The purpose of [Push box Puzzle](https://en.wikipedia.org/wiki/Sokoban) (a.k.a. Sokoban, warehouse keeper) is storing all of box to hole.
+# Warehouse Keeper
+The purpose of [Warehouse Keeper](https://en.wikipedia.org/wiki/Sokoban) (a.k.a. Sokoban) is storing all of box to hole.
 
 # How to Use
 Note: Linux (or possibly MacOS) requires being a root to read hotkey.
