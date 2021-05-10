@@ -1,5 +1,5 @@
 # Warehouse Keeper
-The purpose of [Warehouse Keeper](https://en.wikipedia.org/wiki/Sokoban) (a.k.a. Sokoban) is storing all of box to hole.
+The goal of [Warehouse Keeper](https://en.wikipedia.org/wiki/Sokoban) (a.k.a. Sokoban) is storing all of box to hole.
 
 # How to Use
 Note: Linux (or possibly MacOS) requires being a root to read hotkey.
